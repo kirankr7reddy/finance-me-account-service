@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="FinanceMe Test Suite">
+    <test name="Account Tests">
+        <classes>
+            <class name="com.financeme.accountservice.testng.AccountTestNGTest" />
+        </classes>
+    </test>
+</suite>
