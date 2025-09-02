@@ -15,7 +15,6 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Replace YOUR_GITHUB_USERNAME with your actual GitHub username
                 git branch: 'main', url: 'https://github.com/kirankr7reddy/finance-me-account-service.git'
             }
         }
@@ -47,10 +46,10 @@ pipeline {
             steps {
                  withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
                 sh 'ansible-playbook -i ansible/hosts.ini ansible/setup.yml'
+                 }
             }
         }
-    }
-}       
+    }       
 
     post {
         success {
