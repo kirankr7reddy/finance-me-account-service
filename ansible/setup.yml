@@ -1,0 +1,40 @@
+---
+- name: Setup FinanceMe Docker App
+  hosts: financeme-app
+  become: yes
+
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add ec2-user to Docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Pull Docker image
+      shell: docker pull kiranreddykr7/financeme-account-service:latest
+
+    - name: Remove existing container if it exists
+      shell: |
+        if [ $(docker ps -a -q -f name=financeme-app) ]; then
+          docker rm -f financeme-app
+        fi
+
+    - name: Run Docker container
+      shell: docker run -d --name financeme-app -p 8080:8080 kiranreddykr7/financeme-account-service:latest
+  
