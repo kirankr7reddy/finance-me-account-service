@@ -1,58 +1,61 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3'  
+    environment {
+        DOCKERHUB_USER = 'kiranreddykr7'
+        IMAGE_NAME = 'financeme-account-service'
+        IMAGE_TAG = 'latest'
+        DOCKER_IMAGE = "${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
-    environment {
-        GIT_REPO = 'https://github.com/kirankr7reddy/finance-me-account-service.git'
+    tools {
+        maven 'Maven 3'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: "${GIT_REPO}"
+                // Replace YOUR_GITHUB_USERNAME with your actual GitHub username
+                git branch: 'main', url: 'https://github.com/kirankr7reddy/finance-me-account-service.git'
             }
         }
 
-        stage('Build with Maven') {
+        stage('Build & Test') {
             steps {
                 sh 'mvn clean install'
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
                 sh 'mvn test'
-            }
-        }
-
-        stage('Run TestNG & Generate HTML Report') {
-            steps {
                 sh 'mvn test -DsuiteXmlFile=testng.xml'
             }
         }
 
-        stage('Package Application') {
+        stage('Build Docker Image') {
             steps {
-                sh 'mvn package'
+                sh "docker build -t ${DOCKER_IMAGE} ."
             }
         }
 
-        stage('Archive Artifacts') {
+        stage('Push Docker Image') {
             steps {
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin'
+                    sh "docker push ${DOCKER_IMAGE}"
+                }
+            }
+        }
+
+        stage('Deploy with Ansible') {
+            steps {
+                sh 'ansible-playbook -i ansible/hosts.ini ansible/setup.yml'
             }
         }
     }
 
     post {
         success {
-            echo 'Build and Test completed successfully!'
+            echo '✅ Deployment completed successfully!'
         }
         failure {
-            echo 'Build failed!'
+            echo '❌ Deployment failed!'
         }
     }
 }
