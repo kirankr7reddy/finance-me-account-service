@@ -45,12 +45,13 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 sshagent(['ec2-ssh-key']) {
-                 withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
-                sh 'ansible-playbook -i ansible/hosts.ini ansible/setup.yml'
-                 }
+                    withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
+                        sh 'ansible-playbook -i ansible/hosts.ini ansible/setup.yml'
+                    }
+                }
             }
         }
-    }       
+    }
 
     post {
         success {
@@ -61,3 +62,4 @@ pipeline {
         }
     }
 }
+
