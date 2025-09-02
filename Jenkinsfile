@@ -45,6 +45,7 @@ pipeline {
 
         stage('Deploy with Ansible') {
             steps {
+                 withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
                 sh 'ansible-playbook -i ansible/hosts.ini ansible/setup.yml'
             }
         }
