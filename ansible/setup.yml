@@ -1,6 +1,6 @@
 ---
 - name: Setup FinanceMe Docker App
-  hosts: financeme-app
+  hosts: financeme-app-new
   become: yes
 
   tasks:
