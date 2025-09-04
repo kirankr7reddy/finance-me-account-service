@@ -1,3 +1,4 @@
+package com.financeme.accountservice.testng;
 import org.testng.annotations.Test;
 
 public class AccountTestNGTest {
