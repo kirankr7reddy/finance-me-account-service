@@ -37,6 +37,11 @@ public class AccountController {
     public String home() {
         return "FinanceMe App is running!";
     }
+
+    @GetMapping("/viewAllAccounts")
+    public List<Account> viewAllAccounts() {
+        return accountService.getAllAccounts();
+    }
 }
     
 
