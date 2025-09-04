@@ -35,7 +35,7 @@ public class AccountController {
 
     @GetMapping("/")
     public String home() {
-        return "FinanceMe Account Service is running!";
+        return "FinanceMe App is running!";
     }
 }
     
