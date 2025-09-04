@@ -32,4 +32,11 @@ public class AccountController {
         accountService.deleteAccount(accountNo);
         return "Account with account number " + accountNo + " deleted successfully.";
     }
+
+    @GetMapping("/")
+    public String home() {
+        return "FinanceMe Account Service is running!";
+    }
 }
+    
+
